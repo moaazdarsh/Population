@@ -1,6 +1,5 @@
 import random as r
 import matplotlib.pyplot as plt
-import pandas as pd
 
 #LS is the lifespan without food, N is the initial population, P contains all the population
 LS = 100
@@ -73,7 +72,3 @@ if not animate:
     graph.plot(range(len(PLog)), PLog)
     graph.plot(range(len(FoodLog)), FoodLog)
     plt.show()
-
-#saving the most recent logs
-datacsv = pd.DataFrame([PLog, FoodLog])
-datacsv.to_csv("data.csv")
