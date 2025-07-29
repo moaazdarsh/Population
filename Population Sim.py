@@ -7,6 +7,10 @@ LS = 100
 N = 5
 P = [[LS] for n in range(N)]
 
+#setting up graphics
+W, graph = plt.subplots()
+animate = True # set to True to animate the graph
+
 # T is the no. of iterations
 T = 5000
 # logging the values to graph them
@@ -16,10 +20,14 @@ food = 500
 # the probability of reproduction for the individual
 BirthProb = 0.008
 for Tloop in range(T):
-    food += 20
-    #the probability of finding food is negatively affected by scarcity
-    EatingProb = 0.07 * food/len(P)
+    food += r.randint(0, 20)
 
+    #the probability of finding food is negatively affected by scarcity
+    if len(P) != 0:
+        EatingProb = 0.07 * food/len(P)
+    else:
+        EatingProb = 0
+    
     new = 0
     deaths = []
     for n in range(len(P)):
@@ -38,25 +46,34 @@ for Tloop in range(T):
 
     ''' since the previous 'for' loop depends on len(P),
     we should only add or remove individuals outside of it'''
-    for dead in reversed(deaths):
+    for dead in reversed(deaths): #reversed to avoid index errors
         P.pop(dead)
 
     for birth in range(new):
         P.append([LS])
+    
 
     if Tloop % 100 == 0:
         print(f"P: {len(P)}, t: {Tloop}, Food: {food}")
-    
+
+    #animation 
+    if animate:
+        graph.clear()
+        graph.plot(range(len(PLog)), PLog)
+        graph.plot(range(len(FoodLog)), FoodLog)
+        plt.show(block=False)
+        plt.pause(0.01)
+
     #updating logs
     PLog.append(len(P))
     FoodLog.append(food)
 
+if not animate:
+    #if not animating, show the final graph
+    graph.plot(range(len(PLog)), PLog)
+    graph.plot(range(len(FoodLog)), FoodLog)
+    plt.show()
+
 #saving the most recent logs
 datacsv = pd.DataFrame([PLog, FoodLog])
 datacsv.to_csv("data.csv")
-
-#plotting
-W, graph = plt.subplots()
-graph.plot(range(len(PLog)), PLog)
-graph.plot(range(len(FoodLog)), FoodLog)
-plt.show()
