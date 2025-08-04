@@ -1,14 +1,14 @@
 import random as r
 import matplotlib.pyplot as plt
 
-#LS is the lifespan without food, N is the initial population, P contains all the population
+#LS is the lifespan without food, P_0 is the initial population, P contains all the population
 LS = 100
-N = 5
-P = [[LS] for n in range(N)]
+P_0 = 5
+P = [LS for n in range(P_0)]
 
-#setting up graphics
+#setting up graphics  
 W, graph = plt.subplots()
-animate = True # set to True to animate the graph
+animate = False # set to True to animate the graph
 
 # T is the no. of iterations
 T = 5000
@@ -18,7 +18,7 @@ FoodLog = []
 food = 500
 # the probability of reproduction for the individual
 BirthProb = 0.008
-for Tloop in range(T):
+for DeltaT in range(T):
     food += r.randint(0, 20)
 
     #the probability of finding food is negatively affected by scarcity
@@ -34,13 +34,13 @@ for Tloop in range(T):
         if r.random() < BirthProb:
             new += 1
 
-        P[n][0] -= 1
+        P[n] -= 1
         #individuals eat when hungry and food is available
-        if (r.random() < EatingProb) & (P[n][0] <= 1) & (food > 0):
+        if (r.random() < EatingProb) & (P[n] <= 1) & (food > 0):
             food -= 1
-            P[n][0] = LS
+            P[n] = LS
 
-        if P[n][0] <= 0:
+        if P[n] <= 0:
             deaths.append(n)
 
     ''' since the previous 'for' loop depends on len(P),
@@ -49,11 +49,11 @@ for Tloop in range(T):
         P.pop(dead)
 
     for birth in range(new):
-        P.append([LS])
+        P.append(LS)
     
 
-    if Tloop % 100 == 0:
-        print(f"P: {len(P)}, t: {Tloop}, Food: {food}")
+    if DeltaT % 100 == 0:
+        print(f"P: {len(P)}, t: {DeltaT}, Food: {food}")
 
     #animation 
     if animate:
@@ -69,6 +69,6 @@ for Tloop in range(T):
 
 if not animate:
     #if not animating, show the final graph
-    graph.plot(range(len(PLog)), PLog)
-    graph.plot(range(len(FoodLog)), FoodLog)
+    graph.plot(range(T), PLog)
+    graph.plot(range(T), FoodLog)
     plt.show()
